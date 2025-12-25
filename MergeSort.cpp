@@ -15,11 +15,19 @@ void merge(int start, int mid, int end) {
             j++; p++;
         }
     }
+    for ( ; i <= mid; i++) {
+        tmp[p] = arr[i];
+        p++;
+    }
+    for ( ; j <= end; j++) {
+        tmp[p] = arr[j];
+        p++;
+    }
     for (int k = start; k <= end; k++) arr[k] = tmp[k];
 }
 
 void mergesort(int start, int end) {
-    cout << start << " : " << end << endl;
+    // cout << start << " : " << end << endl;
     if (start == end) return;
 
     int mid = start + (end - start) / 2;

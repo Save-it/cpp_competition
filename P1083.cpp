@@ -1,10 +1,10 @@
-#include <algorithm>
 #include<bits/stdc++.h>
 using namespace std;
 const int MAXN = 1000000;
 const int MAXM = 1000000;
-int n, m, in[MAXN], ch[MAXN], d, s, t;
-vector<int> poss;
+int n, m, in[MAXN], ch[MAXN], d, s, t, poss2[MAXN];
+vector<int> poss1;
+bool flag;
 
 struct segmentTree {
     int l, r;
@@ -14,9 +14,10 @@ struct segmentTree {
 void build(int pos, int l, int r) {
     T[pos].l = l;
     T[pos].r = r;
+    if (l == 1) poss2[r] = pos;
     if (l == r) {
         T[pos].dat = ch[l];
-        poss.push_back(pos);
+        poss1.push_back(pos);
         return;
     }
 
@@ -63,22 +64,21 @@ int main() {
         ch[i] = in[i] - in[i - 1];
     }
     build(1, 1, n);
-    // cout << search(1, 1, 2);
-    // for (int i = 1; i <= n * 4; i++) cout << T[i].dat << endl;
 
-    // change(1, 1, 0 - 1);
-    // change(1, 4, 1);
-    // cout << search(1, 1, 1) << endl;
-    // cout << search(1, 1, 2) << endl;
-    // cout << search(1, 1, 3) << endl;
+    // for (int i = 1; i <= n; i++) cout << T[poss2[i]].dat << endl;
+
     for (int i = 1; i <= m; i++) {
+        flag = false;
         cin >> d >> s >> t;
         change(1, s, 0 - d);
         change(1, t + 1, d);
-        int tmp = search(1, 1, s - 1);
-        for (int j = s; j <= t; j++) {
-            tmp += T[poss[s - 1]].dat;
-            // cout << tmp << endl;
+        int tmp = search(1, 1, s);
+        if (tmp < 0) {
+                cout << -1 << endl << i;
+                return 0;
+            }
+        for (int j = s; j < t; j++) {
+            tmp += T[poss1[j]].dat;
             if (tmp < 0) {
                 cout << -1 << endl << i;
                 return 0;
