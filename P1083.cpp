@@ -4,7 +4,6 @@ const int MAXN = 1000000;
 const int MAXM = 1000000;
 int n, m, in[MAXN], ch[MAXN], d, s, t, poss2[MAXN];
 vector<int> poss1;
-bool flag;
 
 struct segmentTree {
     int l, r;
@@ -28,17 +27,18 @@ void build(int pos, int l, int r) {
     T[pos].dat = T[pos * 2].dat + T[pos * 2 + 1].dat;
 }
 
-void change(int idx, int pos, int val) {
+int change(int idx, int pos, int val, bool f) {
     if (T[idx].l == T[idx].r) {
         T[idx].dat += val;
-        return;
+        return T[idx].dat;
     }
 
     int mid = T[idx].l + (T[idx].r - T[idx].l) / 2;
-    if (pos <= mid) change(idx * 2, pos, val);
-    else change(idx * 2 + 1, pos, val);
+    if (pos <= mid) change(idx * 2, pos, val, f);
+    else change(idx * 2 + 1, pos, val, f);
     
     T[idx].dat = T[idx * 2].dat + T[idx * 2 + 1].dat;
+    return T[idx].dat;
 }
 
 int search(int idx, int start, int end) {
@@ -68,18 +68,19 @@ int main() {
     // for (int i = 1; i <= n; i++) cout << T[poss2[i]].dat << endl;
 
     for (int i = 1; i <= m; i++) {
-        flag = false;
         cin >> d >> s >> t;
-        change(1, s, 0 - d);
-        change(1, t + 1, d);
-        int tmp = search(1, 1, s);
-        if (tmp < 0) {
+        change(1, s, 0 - d, false);
+        change(1, t + 1, d, true);
+        int tmp1 = search(1, 1, s);
+        int tmp2 = tmp1;
+        if (tmp1 < 0) {
                 cout << -1 << endl << i;
                 return 0;
             }
-        for (int j = s; j < t; j++) {
-            tmp += T[poss1[j]].dat;
-            if (tmp < 0) {
+        for (int j = s; j < t - 1; j += 2) {
+            tmp1 = tmp2 + T[poss1[j]].dat;
+            tmp2 = tmp1 + T[poss1[j + 1]].dat;
+            if (tmp1 < 0 || (tmp2 < 0 && j + 1 != t)) {
                 cout << -1 << endl << i;
                 return 0;
             }
