@@ -19,6 +19,7 @@ void game(int now, int k) {
     if (k == n) {
         for (int i = 0; i < n / 2; i++) for (int j = i + 1; j < n / 2; j++) p = max(p, w[ps[i]][ps[j]]);
         for (int i = 0; i < n / 2; i++) for (int j = i + 1; j < n / 2; j++) c = max(c, w[cs[i]][cs[j]]);
+        for (int i = 0; i < n / 2; i++) cout << ps[i] << " " << cs[i] << endl;
         cout << p << "  " << c << endl;
         if (p > c) ans = max(ans, p);
         p = 0;
@@ -46,6 +47,7 @@ int main() {
     }
 
     for (int i = 1; i <= n; i++) {
+        cout << i << endl;
         ps.push_back(i);
         vd[i]++;
         game(i, 1);
