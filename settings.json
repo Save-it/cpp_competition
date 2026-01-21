@@ -2,7 +2,7 @@
     "luogu.cphPort": 7680,
     "cph-ng.companion.listenPort": 7680,
     "workbench.editor.empty.hint": "hidden",
-    "git.autofetch": true,
+    "git.autofetch": false,
     "code-runner.runInTerminal": true,
     "code-runner.executorMap": {
         "javascript": "node",
