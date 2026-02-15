@@ -2,13 +2,13 @@
 using namespace std;
 
 const int MAXN = 1000000;
-int n, r, q;
+int n, r, q, k;
 
 struct cptr {
     int x;
     int s;
     int w;
-} cs[MAXN], tmp[MAXN];
+} cs[MAXN], tmp[MAXN], tmp2[MAXN];
 
 bool cmp(cptr a, cptr b) {
     if (a.s == b.s) return a.x < b.x;
@@ -20,23 +20,23 @@ void merge(int start, int mid, int end) {
     int j = mid + 1;
     int p = start;
     while (i <= mid && j <= end) {
-        if (cmp(cs[i], cs[j])) {
-            tmp[p] = cs[i];
+        if (cmp(tmp2[i], tmp2[j])) {
+            tmp[p] = tmp2[i];
             i++; p++;
         } else {
-            tmp[p] = cs[j];
+            tmp[p] = tmp2[j];
             j++; p++;
         }
     }
     for ( ; i <= mid; i++) {
-        tmp[p] = cs[i];
+        tmp[p] = tmp2[i];
         p++;
     }
     for ( ; j <= end; j++) {
-        tmp[p] = cs[j];
+        tmp[p] = tmp2[j];
         p++;
     }
-    for (int k = start; k <= end; k++) cs[k] = tmp[k];
+    for (int t = start; t <= end; t++) cs[t] = tmp[t];
 }
 
 void mergesort(int start, int end) {
@@ -59,15 +59,27 @@ int main() {
     }
     for (int i = 1; i <= n; i++) cin >> cs[i].w;
 
-    mergesort(1, n);
+    sort(cs + 1, cs + n + 1, cmp);
+    k = 1;
     for (int i = 0; i < r; i++) {
         // for (int j = 1; j <= n; j++) cout << cs[j].x << ":" << cs[j].s << " ";
         // cout << endl;
         for (int j = 1; j <= n; j += 2) {
-            if (cs[j].w > cs[j + 1].w) cs[j].s += 1;
-            else cs[j + 1].s += 1;
+            if (cs[j].w > cs[j + 1].w) {
+                cs[j].s += 1;
+                tmp2[k] = cs[j];
+                tmp2[k + n / 2] = cs[j + 1];
+                k++;
+            }
+            else {
+                cs[j + 1].s += 1;
+                tmp2[k] = cs[j + 1];
+                tmp2[k + n / 2] = cs[j];
+                k++;
+            }
         }
-        mergesort(1, n);
+        merge(1, n / 2, n);
+        k = 1;
     }
 
     cout << cs[q].x;
